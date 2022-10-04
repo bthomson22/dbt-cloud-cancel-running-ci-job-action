@@ -18,6 +18,9 @@ dbt_cloud_job_id = os.environ["INPUT_DBT_CLOUD_JOB_ID"]
 # setting the job_check_interval
 dbt_cloud_host = os.environ.get('INPUT_DBT_CLOUD_HOST', 'cloud.getdbt.com')
 
+# setting the github SHA
+github_sha = $(git rev-parse --short "$GITHUB_SHA")
+
 # ------------------------------------------------------------------------------
 # use environment variables to set dbt cloud api configuration
 # ------------------------------------------------------------------------------
@@ -66,9 +69,12 @@ def get_recent_runs_for_job(base_url, headers, job_id):
         
         # getting run url 
         run_url = run["href"]
+
+        # getting run git sha
+        run_sha = run["git_sha"]
         
         # appending the elements to the list
-        recent_runs_info.append({"run_id" : run_id, "run_status" : run_status, "run_url" : run_url })
+        recent_runs_info.append({"run_id" : run_id, "run_status" : run_status, "run_url" : run_url, "run_sha": run_sha})
 
     return recent_runs_info
 
